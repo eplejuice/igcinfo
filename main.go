@@ -33,7 +33,7 @@ func main() {
 	http.HandleFunc("/", handleRubbish)
 	http.HandleFunc("/igcinfo/api/", handleApiSlashRubbish)
 	http.HandleFunc("/igcinfo/api", handleMetaData)
-	http.HandleFunc("/igcinfo/api/igc", handlePost)
+	http.HandleFunc("/igcinfo/api/igc", handleApiIgc)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)

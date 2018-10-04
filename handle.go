@@ -37,6 +37,21 @@ func handleMetaData(w http.ResponseWriter, r *http.Request) {
 	w.Write(metaResp)
 }
 
+func handleApiIgc(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		handleGet(w, r)
+	case http.MethodPost:
+		handlePost(w, r)
+	default:
+		status := http.StatusBadRequest
+		http.Error(w, http.StatusText(status), status)
+	}
+}
+func handleGet(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Get")
+}
+
 func handlePost(w http.ResponseWriter, r *http.Request) {
 	postApi := r.Body
 	defer r.Body.Close()
