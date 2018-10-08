@@ -29,11 +29,7 @@ func main() {
 	Files = make(map[int]igcFile)
 
 	globalCount = 0
-	http.HandleFunc("/igcinfo", handleJustIgcinfo)
-	http.HandleFunc("/", handleRubbish)
-	http.HandleFunc("/igcinfo/api/", handleApiSlashRubbish)
-	http.HandleFunc("/igcinfo/api", handleMetaData)
-	http.HandleFunc("/igcinfo/api/igc", handleApiIgc)
+	http.HandleFunc("/", handleRouter)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
