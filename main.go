@@ -3,86 +3,43 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 )
 
+// Starts to count the time for the uptime function
 var startTime = time.Now()
 
+// A struct that cointains the return data of the metaData function
+// I chose to make it global for easier accessability
 type metaData struct {
 	Uptime  string
 	Info    string
 	Version string
 }
 
+// This map connects a id(int) to a struct containing the Url to the IGC file.
 var Files map[int]igcFile
 
+// Stores the url in a struct to easier encode and decode as a json object
 type igcFile struct {
 	Url string `json: "url"`
 }
 
+// A global variable used as the unique ID in the map containing the IGC file structs
 var globalCount int
 
 func main() {
-
+	// Creates the map
 	Files = make(map[int]igcFile)
 
 	globalCount = 0
+	// Sends every request to the router function with Regex.
 	http.HandleFunc("/", handleRouter)
 
+	//Listens to the Url given by heroku
 	if err := http.ListenAndServe(":8080", nil); err != nil {
+		// If the Url is wrong the program shuts down immediately.
 		panic(err)
-		fmt.Println("Could not handle url")
+		fmt.Errorf("Could not handle url")
 	}
-}
-
-func calcTime() string {
-
-	year := 31536000
-	month := 2592000
-	week := 604800
-	day := 86400
-	hour := 3600
-	minute := 60
-
-	years := 0
-	months := 0
-	weeks := 0
-	days := 0
-	hours := 0
-	minutes := 0
-
-	uptime := time.Since(startTime)
-	uptimee := uptime.String()
-	tmp := strings.Split(uptimee, ".")
-	tmp2 := tmp[0]
-	uptimeS, _ := strconv.Atoi(tmp2)
-
-	fmt.Println(uptimeS)
-	fmt.Println(year)
-	fmt.Println(uptimeS % year)
-
-	years = uptimeS % year
-
-	months = uptimeS % month
-
-	weeks = uptimeS % week
-
-	days = uptimeS % day
-
-	hours = uptimeS % hour
-
-	minutes = uptimeS % minute
-
-	fmt.Println(years)
-	fmt.Println(months)
-	fmt.Println(weeks)
-	fmt.Println(days)
-	fmt.Println(hours)
-	fmt.Println(minutes)
-	fmt.Println(uptimeS)
-
-	returnVal := strings.Join([]string{"P", strconv.Itoa(years), "Y", strconv.Itoa(months), "M", strconv.Itoa(weeks), "W", strconv.Itoa(days), "D", "T", strconv.Itoa(hours), "H", strconv.Itoa(minutes), "M", strconv.Itoa(uptimeS), "S"}, "")
-	return returnVal
 }
