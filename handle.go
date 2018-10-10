@@ -15,28 +15,28 @@ import (
 //This is the router which takes all the http requests and sends them further to the right handleFunc based on the matching Regular expression
 func handleRouter(w http.ResponseWriter, r *http.Request) {
 	// This handles the GET /api
-	regHandleApi, err := regexp.Compile("^/igcinfo/api/$")
+	regHandleAPI, err := regexp.Compile("^/igcinfo/api/$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	// This handles the POST/GET /api/igc
-	regHandleApiIgc, err := regexp.Compile("^/igcinfo/api/igc/$")
+	regHandleAPIIgc, err := regexp.Compile("^/igcinfo/api/igc/$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	// This handles the	GET /api/igc/id
-	regHandleApiIgcId, err := regexp.Compile("^/igcinfo/api/igc/[0-9]+$")
+	regHandleAPIIgcID, err := regexp.Compile("^/igcinfo/api/igc/[0-9]+$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	// This handles the GET /api/igc/id/field
-	regHandleApiIgcIdField, err := regexp.Compile("^/igcinfo/api/igc/[0-9]+/(pilot|glider|glider_id|track_lenght|H_date)$")
+	regHandleAPIIgcIDField, err := regexp.Compile("^/igcinfo/api/igc/[0-9]+/(pilot|glider|glider_id|track_lenght|H_date)$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
@@ -45,14 +45,14 @@ func handleRouter(w http.ResponseWriter, r *http.Request) {
 	// This is a switch that always runs routes the http request to the right handlefunc
 	// Otherwise the dafault gives the user a httpBadRequest response
 	switch {
-	case regHandleApi.MatchString(r.URL.Path):
+	case regHandleAPI.MatchString(r.URL.Path):
 		handleMetaData(w, r)
-	case regHandleApiIgc.MatchString(r.URL.Path):
-		handleApiIgc(w, r)
-	case regHandleApiIgcId.MatchString(r.URL.Path):
-		handleApiIgcId(w, r)
-	case regHandleApiIgcIdField.MatchString(r.URL.Path):
-		handleApiIgcIdField(w, r)
+	case regHandleAPIIgc.MatchString(r.URL.Path):
+		handleAPIIgc(w, r)
+	case regHandleAPIIgcID.MatchString(r.URL.Path):
+		handleAPIIgcID(w, r)
+	case regHandleAPIIgcIDField.MatchString(r.URL.Path):
+		handleAPIIgcIDField(w, r)
 	default:
 		handleError(w, r, nil, http.StatusBadRequest)
 	}
@@ -85,7 +85,7 @@ func handleMetaData(w http.ResponseWriter, r *http.Request) {
 
 // This fuction checks wether the user send a POST or a GET request
 // and routes to the right handleFunc, otherwise returns a httpBadRequest
-func handleApiIgc(w http.ResponseWriter, r *http.Request) {
+func handleAPIIgc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		handleGet(w, r)
@@ -101,14 +101,14 @@ func handleApiIgc(w http.ResponseWriter, r *http.Request) {
 // existing IGC files currently stored in the in-memory database.
 func handleGet(w http.ResponseWriter, r *http.Request) {
 	// Initializes the struct containint the array for the return object
-	type rId struct {
-		returnId []int `json:"id"`
+	type rID struct {
+		ReturnID []int `json:"id"`
 	}
 	w.Header().Set("Content-Type", "application/json")
-	returnObj := rId{make([]int, 0)}
+	returnObj := rID{make([]int, 0)}
 	// If the in-memory database is empty, returns a empty array
 	if len(Files) == 0 {
-		err := json.NewEncoder(w).Encode(returnObj.returnId)
+		err := json.NewEncoder(w).Encode(returnObj.ReturnID)
 		if err != nil {
 			handleError(w, r, err, http.StatusBadRequest)
 			return
@@ -117,10 +117,10 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		// Loops through the map/database
 		for i := range Files {
 			// Appends the IDs ( [int] field of the map) to the array.
-			returnObj.returnId = append(returnObj.returnId, i)
+			returnObj.ReturnID = append(returnObj.ReturnID, i)
 		}
 		// Encodes the array to json and sends it as Response
-		err := json.NewEncoder(w).Encode(returnObj.returnId)
+		err := json.NewEncoder(w).Encode(returnObj.ReturnID)
 		if err != nil {
 			handleError(w, r, err, http.StatusBadRequest)
 			return
@@ -132,17 +132,17 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 // This function handles the POST request when a user wants to post a new Url to an IGC file
 func handlePost(w http.ResponseWriter, r *http.Request) {
 	// Gets the Url stored in the body
-	postApi := r.Body
+	postAPI := r.Body
 	defer r.Body.Close()
 	// Creates a new struct, and decodes the json into it
 	var tmp igcFile
-	err := json.NewDecoder(postApi).Decode(&tmp)
+	err := json.NewDecoder(postAPI).Decode(&tmp)
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
 	// Checks to see if the given Url actually is real, using the marni/goigc library
-	s := tmp.Url
+	s := tmp.URL
 	_, err = igc.ParseLocation(s)
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
@@ -157,7 +157,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	// Creates a json object containing the ID given to the Url as a Response to the user.
 	type ReturnVal struct {
-		Id int `json: "id"`
+		ID int `json:"id"`
 	}
 
 	RV := ReturnVal{globalCount}
@@ -172,7 +172,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 // This funtion handles the GET ID call, which is supposed to return the data of an Igc file
 // based on the given ID.
-func handleApiIgcId(w http.ResponseWriter, r *http.Request) {
+func handleAPIIgcID(w http.ResponseWriter, r *http.Request) {
 	// Base lets us get the last value of the Url, which in this case is the ID
 	tmp := path.Base(r.URL.Path)
 	// The value is given as a string, so it has to be converted to an int before use.
@@ -190,7 +190,7 @@ func handleApiIgcId(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		// Here we use the marni/goigc library functions to get the data of the Igc file
 		// based on a given Url.
-		s := elem.Url
+		s := elem.URL
 		track, err := igc.ParseLocation(s)
 		if err != nil {
 			handleError(w, r, err, http.StatusBadRequest)
@@ -200,19 +200,19 @@ func handleApiIgcId(w http.ResponseWriter, r *http.Request) {
 		// Here a struct is made to contains the values the Igcfile/track returns
 		// to lates be converted to a json for the response
 		type returnValues struct {
-			H_date       time.Time `json:"H_date"`
-			Pilot        string    `json:"pilot"`
-			Glider       string    `json:"glider"`
-			Glider_id    string    `json:"glider:id"`
-			Track_lenght float64   `json:"track_lenght"`
+			HDate       time.Time `json:"H_date"`
+			Pilot       string    `json:"pilot"`
+			Glider      string    `json:"glider"`
+			GliderID    string    `json:"glider:id"`
+			TrackLenght float64   `json:"track_lenght"`
 		}
 		// The values is put into the struct
 		returnObject := returnValues{
-			H_date:       track.Header.Date,
-			Pilot:        track.Pilot,
-			Glider:       track.GliderType,
-			Glider_id:    track.GliderID,
-			Track_lenght: getTrackLenght(track),
+			HDate:       track.Header.Date,
+			Pilot:       track.Pilot,
+			Glider:      track.GliderType,
+			GliderID:    track.GliderID,
+			TrackLenght: getTrackLenght(track),
 		}
 		// Return the struct as a json with the right values (hopefully).
 		err = json.NewEncoder(w).Encode(returnObject)
@@ -221,7 +221,7 @@ func handleApiIgcId(w http.ResponseWriter, r *http.Request) {
 
 // This functions handles the GET /api/igc/id/field call, which is supposed to returns a single
 // value of a Igc file/ track, based on a given ID and the value to be returned.
-func handleApiIgcIdField(w http.ResponseWriter, r *http.Request) {
+func handleAPIIgcIDField(w http.ResponseWriter, r *http.Request) {
 	// First use Base to get the last value of the Url which is field.
 	field := path.Base(r.URL.Path)
 	// Dir returns everything in the URL, but the last value.
@@ -241,7 +241,7 @@ func handleApiIgcIdField(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "", http.StatusNotFound)
 	} else {
 		// If the track is found use the marni/goigc library functions to get values from it
-		s := elem.Url
+		s := elem.URL
 		track, err := igc.ParseLocation(s)
 		if err != nil {
 			handleError(w, r, err, http.StatusBadRequest)

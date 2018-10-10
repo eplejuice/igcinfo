@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -17,12 +16,12 @@ type metaData struct {
 	Version string
 }
 
-// This map connects a id(int) to a struct containing the Url to the IGC file.
+// Files is a map connecting a id(int) to a struct containing the Url to the IGC file.
 var Files map[int]igcFile
 
 // Stores the url in a struct to easier encode and decode as a json object
 type igcFile struct {
-	Url string `json: "url"`
+	URL string `json:"url"`
 }
 
 // A global variable used as the unique ID in the map containing the IGC file structs
@@ -40,6 +39,5 @@ func main() {
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		// If the Url is wrong the program shuts down immediately.
 		panic(err)
-		fmt.Errorf("Could not handle url")
 	}
 }
