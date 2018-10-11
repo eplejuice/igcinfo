@@ -148,12 +148,11 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
-	// Maps the encoded struct to the map, with a unique ID from the global varibale
-	// this variable can assign the same ID twice, if two POST requests is sent exactly
+	// Maps the encoded struct to the map, with a unique ID from the global variable
+	// this variable can assign the same ID twice, if two POST requests are sent exactly
 	// at the same time, however this seems very unlikely.
 	globalCount++
 	Files[globalCount] = tmp
-	fmt.Println(Files)
 
 	// Creates a json object containing the ID given to the Url as a Response to the user.
 	type ReturnVal struct {
