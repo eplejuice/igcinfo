@@ -61,8 +61,11 @@ func handleRouter(w http.ResponseWriter, r *http.Request) {
 // This function handles all the errors and writes them as a reponse to the user
 // with the right error code based on the parameter recieved
 func handleError(w http.ResponseWriter, r *http.Request, err error, status int) {
-
-	http.Error(w, fmt.Sprintf("%s/t%s", http.StatusText(status), err), status)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("%s/t%s", http.StatusText(status), err), status)
+	} else {
+		http.Error(w, fmt.Sprintf(http.StatusText(status)), status)
+	}
 }
 
 // This is the function which gives the user information about the api
