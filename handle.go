@@ -15,21 +15,21 @@ import (
 //This is the router which takes all the http requests and sends them further to the right handleFunc based on the matching Regular expression
 func handleRouter(w http.ResponseWriter, r *http.Request) {
 	// This handles the GET /api
-	regHandleAPI, err := regexp.Compile("^/igcinfo/api$")
+	regHandleAPI, err := regexp.Compile("^/igcinfo/api/?$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	// This handles the POST/GET /api/igc
-	regHandleAPIIgc, err := regexp.Compile("^/igcinfo/api/igc$")
+	regHandleAPIIgc, err := regexp.Compile("^/igcinfo/api/igc/?$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
 	}
 
 	// This handles the	GET /api/igc/id
-	regHandleAPIIgcID, err := regexp.Compile("^/igcinfo/api/igc/[0-9]+$")
+	regHandleAPIIgcID, err := regexp.Compile("^/igcinfo/api/igc/[0-9]+/?$")
 	if err != nil {
 		handleError(w, r, err, http.StatusBadRequest)
 		return
