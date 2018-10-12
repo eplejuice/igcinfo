@@ -10,10 +10,15 @@ Develop an online service that will allow users to browse information about IGC 
 
 #### Heroku link 
     https://vast-hamlet-56796.herokuapp.com/igcinfo/api
+    
+#### External dependencies
+    https://github.com/marni/goigc
+    https://github.com/gorilla/mux
  
 ### Quality
 - [x]Golint
 - [x]GoVet
+
 ## Test and expected results
 
 ### Tested using [Postman](https://www.getpostman.com/)
