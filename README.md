@@ -26,6 +26,7 @@ Adding a "/" at the end of the URL may also result in bad request response
 
 #### GET /api
 [Test](https://vast-hamlet-56796.herokuapp.com/igcinfo/api)
+
 Returns metadata about the API
 
     {
@@ -36,6 +37,7 @@ Returns metadata about the API
 
 #### POST /api/igc
 [Test with postman](https://www.getpostman.com/)
+
 Register a track, sent as a json in the body of the Url
 
         {
@@ -50,6 +52,7 @@ Returns the id assigned to the track
 
 #### GET api/igc
 [Test](https://vast-hamlet-56796.herokuapp.com/igcinfo/api/igc)
+
 Returns an array with all IDs of all registered tracks.
 Returns an empty array if there are no registered tracks.
 
@@ -57,6 +60,7 @@ Returns an empty array if there are no registered tracks.
 
 #### GET api/igc/`<id>`
 [Test with id = 1 ](https://vast-hamlet-56796.herokuapp.com/igcinfo/api/igc/1)
+
 Returns info storen on a track, based on given `<id>`
 
         {
