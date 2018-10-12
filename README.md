@@ -67,6 +67,9 @@ Returns an empty array if there are no registered tracks.
 
 Returns info storen on a track, based on given `<id>`
 
+Returns empty if no tracks are registered beforehand
+
+
         {
         "H_date": <date from File Header, H-record>,
         "pilot": <pilot>,
@@ -79,5 +82,7 @@ Returns info storen on a track, based on given `<id>`
 [Test with id = 1 and field = "pilot"](https://vast-hamlet-56796.herokuapp.com/igcinfo/api/igc/1/pilot)
 
 Returns a single value of a track, based on `<id>` and `<field>`
+
+Returns empty if no tracks are registered beforehand
 
     <pilot> Miguel Angel Gordillo
