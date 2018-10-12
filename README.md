@@ -26,7 +26,6 @@ Develop an online service that will allow users to browse information about IGC 
 ##### Bad Requests
     https://vast-hamlet-56796.herokuapp.com/        -> 404
     https://vast-hamlet-56796.herokuapp.com/igcinfo -> 404
-Adding a "/" at the end of the URL may also result in bad request response
 
 
 #### GET /api
