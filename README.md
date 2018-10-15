@@ -16,8 +16,8 @@ Develop an online service that will allow users to browse information about IGC 
     https://github.com/gorilla/mux
  
 ### Quality
-- [x]Golint
-- [x]GoVet
+- [x] Golint
+- [x] GoVet
 
 ## Test and expected results
 
